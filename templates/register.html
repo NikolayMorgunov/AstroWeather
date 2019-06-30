@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign up</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {%if exists%}
+    <div class="alert alert-danger" role="alert">
+        Such username already exists
+    </div>
+    {%endif%}
+    {%if diff_pass%}
+    <div class="alert alert-danger" role="alert">
+        Passwords are not the same
+    </div>
+    {%endif%}
+    {% if location_not_exist %}
+    <div class="alert alert-danger" role="alert">
+        Cannot find your locality
+    </div>
+    {%endif%}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username }}<br>
+        {% for error in form.username.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password }}<br>
+        {% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.rep_password.label }}<br>
+        {{ form.rep_password }}<br>
+        {% for error in form.rep_password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.country.label }}<br>
+        {{ form.country }}<br>
+        {% for error in form.country.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+
+    <p>
+        {{ form.city.label }}<br>
+        {{ form.city}}<br>
+        {% for error in form.city.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+
+    <p>{{ form.submit() }}</p>
+    <a href="/login">To login</a>
+</form>
+{% endblock %}

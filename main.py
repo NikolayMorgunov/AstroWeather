@@ -7,6 +7,7 @@ from flask import redirect, render_template
 from flask import session
 from auth_check import *
 from users_db import *
+from geocoding import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'twit_twit'
@@ -28,7 +29,6 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     rep_password = PasswordField('Repeat password', validators=[DataRequired()])
     country = StringField('Country', validators=[DataRequired()])
-    region = StringField('Region', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     submit = SubmitField('Sign up')
 
@@ -48,7 +48,38 @@ def login():
             return redirect('/main_page')
         else:
             normal_auth = False
-    return render_template('login.html', title='Вход', form=form, normal_auth=normal_auth)
+    return render_template('login.html', title='Login', form=form, normal_auth=normal_auth,
+                           loginned='username' in session)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    exists = False
+    diff_pass = False
+    location_exists = True
+    username = form.data['username']
+    password = form.data['password']
+    rep_password = form.data['rep_password']
+    country = form.data['country']
+    city = form.data['city']
+    if form.validate_on_submit():
+        if User.select().where(User.username == username):
+            exists = True
+        elif password != rep_password:
+            diff_pass = True
+        elif not exist(country, city):
+            location_exists = False
+        else:
+            coords_of_city = coords(country, city)
+            longitude = coords_of_city[0]
+            latitude = coords_of_city[1]
+            user = User.create(username=username, password=password, country=country, city=city, longitude=longitude,
+                               latitude=latitude)
+            return redirect("/success_register")
+    return render_template('register.html', title='Sign up', form=form, exists=exists, diff_pass=diff_pass,
+                           location_not_exist=not location_exists,
+                           loginned='username' in session)
 
 
 if __name__ == '__main__':

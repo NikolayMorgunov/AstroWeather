@@ -15,7 +15,9 @@
         }
         .header-bg {
         background: url('static/images/name.jpg') left top no-repeat;  height: 149px;}
-
+        table{
+        margin-left: 90px;
+        }
     </style>
     <title>{{title}}</title>
 </head>
@@ -25,6 +27,21 @@
     <div class="header-bg">
     </div>
 </header>
+<table cellpadding="10">
+    <tr>
+        <td>
+            <a href="/about">About</a>
+        </td>
+        {% if loginned %}
+        <td>
+            <a href="/forecast">Forecast</a>
+        </td>
+        <td>
+            <a href="/change_location">Change location</a>
+        </td>
+        {% endif %}
+    </tr>
+</table>
 
 <main role="main" class="container">
     {% block content %}{% endblock %}
