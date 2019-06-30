@@ -82,5 +82,9 @@ def register():
                            loginned='username' in session)
 
 
+@app.route('/about', methods=['GET', 'POST'])
+def about():
+    return render_template('about.html', title='About', loginned='username' in session)
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
