@@ -7,6 +7,7 @@ from flask import redirect, render_template
 from flask import session
 from auth_check import *
 from users_db import *
+from forecast_db import *
 from geocoding import *
 
 app = Flask(__name__)
@@ -139,6 +140,15 @@ def success_change():
                                username=session['username'])
     else:
         return render_template('success_change.html', title='Change success', loginned='username' in session)
+
+
+@app.route('/forecast', methods=['GET', 'POST'])
+def forecast():
+    user = User.get(User.username == session['username'])
+    longitude = user.longitude
+    latitude = user.latitude
+    prepared_city = bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude))
+
 
 
 if __name__ == '__main__':
