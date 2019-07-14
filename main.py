@@ -9,11 +9,14 @@ from auth_check import *
 from users_db import *
 from forecast_db import *
 from geocoding import *
+from timezonefinder import *
+from month import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'i_love_astronomy'
 
 User.create_table()
+tf = TimezoneFinder(in_memory=True)
 
 
 class LoginForm(FlaskForm):
@@ -147,8 +150,19 @@ def forecast():
     user = User.get(User.username == session['username'])
     longitude = user.longitude
     latitude = user.latitude
-    prepared_city = bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude))
+    timezone = tf.timezone_at(lat=latitude, lng=longitude)
+    time_request = 'http://worldtimeapi.org/api/timezone/' + timezone
+    response_time = requests.get(time_request)
+    json_response = response_time.json()
+    datetime = json_response['datetime']
+    date = datetime[:10]
+    year = datetime[:4]
+    month = digit_word_month(datetime[5:7])
+    day = datetime[8:10]
+    time = datetime[11:16]
 
+    need_new_forecast_item = not (
+        bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude)))
 
 
 if __name__ == '__main__':
