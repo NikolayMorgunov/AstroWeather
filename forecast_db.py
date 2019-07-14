@@ -11,6 +11,9 @@ class Forecast(Model):
     timezone = TextField()
     date_of_forecast = TextField()
     time_of_forecast = TextField()
+    sunrise = TextField()
+    sunset = TextField()
+
 
     current_weather = TextField()
     current_astro = BooleanField()
@@ -19,6 +22,8 @@ class Forecast(Model):
     second_period_weather = TextField()
     second_period_astro = BooleanField()
 
+    class Meta:
+        database = db
 #    weather_descript_morning = TextField()
 #    asrtro_ok_morning = BooleanField()
 #    weather_descript_day = TextField()

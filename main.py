@@ -11,11 +11,13 @@ from forecast_db import *
 from geocoding import *
 from timezonefinder import *
 from month import *
+from getting_forecast import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'i_love_astronomy'
 
 User.create_table()
+Forecast.create_table()
 tf = TimezoneFinder(in_memory=True)
 
 
@@ -163,6 +165,10 @@ def forecast():
 
     need_new_forecast_item = not (
         bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude)))
+
+    if need_new_forecast_item:
+        all_forecast = request_to_weather(latitude, longitude)
+
 
 
 if __name__ == '__main__':

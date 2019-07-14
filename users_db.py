@@ -13,6 +13,5 @@ class User(Model):
     longitude = FloatField()
     latitude = FloatField()
 
-
     class Meta:
         database = db
