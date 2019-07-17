@@ -1,17 +1,15 @@
 import requests
-from flask import Flask
+from flask import Flask, redirect, render_template, session
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
-from flask import redirect, render_template
-from flask import session
 from auth_check import *
 from users_db import *
 from forecast_db import *
 from geocoding import *
 from timezonefinder import *
 from month import *
-from getting_forecast import *
+from making_forecast import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'i_love_astronomy'
@@ -162,13 +160,17 @@ def forecast():
     month = digit_word_month(datetime[5:7])
     day = datetime[8:10]
     time = datetime[11:16]
+    hours = int(time[:2])
+    part_of_day = ['Night', 'Morging', 'Day', 'Evening'][hours // 6]
 
     need_new_forecast_item = not (
         bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude)))
-
     if need_new_forecast_item:
-        all_forecast = request_to_weather(latitude, longitude)
-
+        make_forecast(latitude, longitude, date, time, part_of_day, True)
+    else:
+        item = Forecast.get(Forecast.latitude == latitude and Forecast.longitude == longitude)
+        if not(item.date_of_forecast == date and item.part_of_day == part_of_day):
+            make_forecast(latitude, longitude, date, time, part_of_day, False)
 
 
 if __name__ == '__main__':
