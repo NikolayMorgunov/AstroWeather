@@ -1,7 +1,6 @@
 from peewee import *
 import sqlite3
 
-
 db = SqliteDatabase('forecast.db')
 
 
@@ -14,7 +13,6 @@ class Forecast(Model):
     sunrise = TextField()
     sunset = TextField()
 
-
     current_weather = TextField()
     current_dark_time = BooleanField()
     current_astro = BooleanField()
@@ -23,8 +21,7 @@ class Forecast(Model):
     first_period_dark_time = BooleanField()
     second_period_weather = TextField()
     second_period_astro = BooleanField()
-    second_period_dark_time = BooleanField()
+    second_period_dark = BooleanField()
 
     class Meta:
         database = db
-

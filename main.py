@@ -14,7 +14,7 @@ from making_forecast import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'i_love_astronomy'
 
-User.create_table()
+# User.create_table()
 Forecast.create_table()
 tf = TimezoneFinder(in_memory=True)
 
@@ -161,17 +161,17 @@ def forecast():
     day = datetime[8:10]
     time = datetime[11:16]
     hours = int(time[:2])
-    part_of_day = ['Night', 'Morging', 'Day', 'Evening'][hours // 6]
+    part_of_day = ['Night', 'Morning', 'Day', 'Evening'][hours // 6]
 
     need_new_forecast_item = not (
         bool(Forecast.select().where(Forecast.latitude == latitude and Forecast.longitude == longitude)))
     if need_new_forecast_item:
-        make_forecast(latitude, longitude, date, time, part_of_day, True)
+        item = make_forecast(latitude, longitude, date, time, part_of_day, True)
     else:
         item = Forecast.get(Forecast.latitude == latitude and Forecast.longitude == longitude)
-        if not(item.date_of_forecast == date and item.part_of_day == part_of_day):
-            make_forecast(latitude, longitude, date, time, part_of_day, False)
-
+        if not (item.date_of_forecast == date and item.part_of_day == part_of_day):
+            item = make_forecast(latitude, longitude, date, time, part_of_day, False)
+    return render_template('forecast.html')
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
