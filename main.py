@@ -129,6 +129,8 @@ def change_location():
             user = User.get(User.username == session['username'])
             user.longitude = longitude
             user.latitude = latitude
+            user.country = country
+            user.city = city
             user.save()
             return redirect("/success_change")
     return render_template('change_location.html', title='Change location', form=form,
@@ -171,7 +173,41 @@ def forecast():
         item = Forecast.get(Forecast.latitude == latitude and Forecast.longitude == longitude)
         if not (item.date_of_forecast == date and item.part_of_day == part_of_day):
             item = make_forecast(latitude, longitude, date, time, part_of_day, False)
-    return render_template('forecast.html')
+
+    parts_timing = {'Night': '6:00', 'Morning': '12:00', 'Day': '18:00', 'Evening': '00:00'}
+    dark_time = {True: "Dark time", False: "Light time"}
+    astro_norm = {True: "Good time for astronomy", False: "Bad time for astronomy"}
+
+    text = [[time + ' - ' + parts_timing[part_of_day], item.current_weather, dark_time[
+        item.current_dark_time], astro_norm[item.current_astro] + '\n']]
+
+    if part_of_day == 'Night':
+        second_period = '6:00 - 12:00'
+        third_period = '12:00 - 18:00'
+    elif part_of_day == 'Morning':
+        second_period = '12:00 - 18:00'
+        third_period = '18:00 - 00:00'
+    elif part_of_day == 'Day':
+        second_period = '18:00 - 00:00'
+        third_period = '00:00 - 06:00'
+    else:
+        second_period = '00:00 - 06:00'
+        third_period = '6:00 - 12:00'
+
+    text.append([second_period, item.first_period_weather, dark_time[item.first_period_dark_time], \
+                 astro_norm[item.first_period_astro]])
+    text.append([third_period, item.second_period_weather, dark_time[item.second_period_dark], \
+                 astro_norm[item.second_period_astro]])
+
+    if item.sunrise == 'polar':
+        return render_template('forecast.html', title='Forecast', loginned='username' in session,
+                               username=session['username'], city=user.city, day=day, month=month, year=year,
+                               not_polar=False, text=text)
+    else:
+        return render_template('forecast.html', title='Forecast', loginned='username' in session,
+                               username=session['username'], city=user.city, day=day, month=month, year=year,
+                               not_polar=True, sunrise=item.sunrise, sunset=item.sunset, text=text)
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
