@@ -14,7 +14,7 @@ from making_forecast import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'i_love_astronomy'
 
-# User.create_table()
+User.create_table()
 Forecast.create_table()
 tf = TimezoneFinder(in_memory=True)
 
