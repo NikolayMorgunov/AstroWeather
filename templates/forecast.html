@@ -3,7 +3,7 @@
 
 <h1> Astronomic weather conditions in {{ city }} on {{ day }} {{ month }} {{ year }}</h1>
 {% if not_polar %}
-<table cellpadding="25">
+<table cellpadding="25" bordercolor="black" border="2">
     <tr>
         <td><h3>{{sunrise}}</h3></td>
         <td><h3>Sunrise</h3></td>
@@ -16,7 +16,7 @@
 {% endif %}
 
 
-<table cellpadding="25">
+<table cellpadding="26" bordercolor="black" border="2">
     {% for i in text %}
     <tr>
         {% for j in i %}
