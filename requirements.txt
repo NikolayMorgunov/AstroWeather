@@ -12,6 +12,6 @@ numpy==1.16.4
 peewee==3.9.6
 requests==2.22.0
 timezonefinder==4.1.0
-urllib3==1.25.3
+urllib3==1.26.5
 Werkzeug==0.15.4
 WTForms==2.2.1
